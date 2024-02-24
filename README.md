@@ -8,9 +8,8 @@
 - used local storage to store old searches
 - taken screenshots of
 
-## TO DO
-
-- need to add better css styling
+## Github Url
+https://hwarsame7.github.io/06-Weather-Dashboard/
 
 ## screenshots
 
