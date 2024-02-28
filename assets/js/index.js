@@ -1,8 +1,11 @@
+// Selecting DOM elements
 const weatherCardsContainer = $(".forecast-display");
 const currentWeatherContainer = $(".current-weather-container");
 
+// OpenWeatherMap API key
 const API_KEY = "393609ac7b2e5f25ccdd00e626ee13dd";
 
+// Function to format current weather data
 const getCurrentData = function (name, forecastData) {
   return {
     name: name,
@@ -15,10 +18,12 @@ const getCurrentData = function (name, forecastData) {
   };
 };
 
+// Function to format date
 const getFormattedDate = function (unixTimestamp, format = "DD/MM/YYYY") {
   return moment.unix(unixTimestamp).format(format);
 };
 
+// Function to format forecast weather data
 const getForecastData = function (forecastData) {
   const callback = function (each) {
     return {
@@ -33,20 +38,24 @@ const getForecastData = function (forecastData) {
   return forecastData.daily.slice(1, 6).map(callback);
 };
 
+// Function to fetch weather data from OpenWeatherMap API
 const getWeatherData = async (cityName) => {
+  // Fetch current weather data
   const currentDataUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}`;
   const currentDataResponse = await fetch(currentDataUrl);
   const currentData = await currentDataResponse.json();
 
+  // Extract latitude, longitude, and city name
   const lat = currentData.coord.lat;
   const lon = currentData.coord.lon;
   const name = currentData.name;
 
+  // Fetch forecast weather data
   const forecastDataUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=imperial`;
-
   const forecastDataResponse = await fetch(forecastDataUrl);
   const forecastData = await forecastDataResponse.json();
 
+  // Format current and forecast weather data
   const current = getCurrentData(name, forecastData);
   const forecast = getForecastData(forecastData);
 
@@ -55,6 +64,7 @@ const getWeatherData = async (cityName) => {
     forecast: forecast,
   };
 };
+
 
 const getUVIClassName = function (uvi) {
   if (uvi >= 0 && uvi < 3) {
@@ -68,20 +78,19 @@ const getUVIClassName = function (uvi) {
   }
 };
 
+// Function to store recent cities in local storage
 const setCitiesInLS = function (cityName) {
-  // get cities from LS
+  // Retrieve cities from local storage
   const cities = JSON.parse(localStorage.getItem("recentCities")) ?? [];
 
-  // if city does not exist
+  // Add city to the list if not already present
   if (!cities.includes(cityName)) {
-    // insert cityName in cities
     cities.push(cityName);
-
-    // set cities in LS
     localStorage.setItem("recentCities", JSON.stringify(cities));
   }
 };
 
+// Function to render current weather card
 const renderCurrentWeatherCard = function (currentData) {
   const currentWeatherCard = `<div class="current-weather">
           <div class="city">
@@ -104,10 +113,11 @@ const renderCurrentWeatherCard = function (currentData) {
           )}">${currentData.uvi}</span></div>
           </div>`;
 
+  // Append current weather card to container
   currentWeatherContainer.append(currentWeatherCard);
 };
 
-// constructing forecast cards
+// Function to render forecast weather cards
 const renderForecastWeatherCards = function (forecastData) {
   const constructForecastCard = function (each) {
     return `<div class="forecast-card">
@@ -121,8 +131,10 @@ const renderForecastWeatherCards = function (forecastData) {
   </div>`;
   };
 
+  
   const forecastCards = forecastData.map(constructForecastCard).join("");
 
+  // Append forecast cards container to main container
   const forecastCardsContainer = `<div class="bg-white border">
     <div
         class="m-3 d-flex flex-wrap justify-content-around"
@@ -133,79 +145,10 @@ const renderForecastWeatherCards = function (forecastData) {
   weatherCardsContainer.append(forecastCardsContainer);
 };
 
-// constructing weather cards
+// Function to render weather cards
 const renderWeatherCards = function (weatherData) {
   renderCurrentWeatherCard(weatherData.current);
   renderForecastWeatherCards(weatherData.forecast);
 };
 
-const renderRecentCities = function () {
-  // get cities from LS
-  const cities = JSON.parse(localStorage.getItem("recentCities")) ?? [];
 
-  const citiesContainer = $("#city-list");
-
-  citiesContainer.empty();
-
-  const constructAndAppendCity = function (city) {
-    const liEl = `<li data-city=${city} class="list-group-item">${city}</li>`;
-    citiesContainer.append(liEl);
-  };
-
-  const handleClick = function (event) {
-    const target = $(event.target);
-
-    // if click is from li only
-    if (target.is("li")) {
-      // get city name
-      const cityName = target.data("city");
-
-      // render weather info with city name
-      renderWeatherInfo(cityName);
-    }
-  };
-
-  citiesContainer.on("click", handleClick);
-
-  cities.forEach(constructAndAppendCity);
-};
-
-const renderWeatherInfo = async function (cityName) {
-  const weatherData = await getWeatherData(cityName);
-
-  weatherCardsContainer.empty();
-  currentWeatherContainer.empty();
-
-  renderWeatherCards(weatherData);
-};
-
-const handleSearch = async function (event) {
-  event.preventDefault();
-
-  const cityName = $("#city-input").val();
-
-  if (cityName) {
-    renderWeatherInfo(cityName);
-
-    setCitiesInLS(cityName);
-
-    renderRecentCities();
-  }
-};
-
-const handleReady = function () {
-  // render recent cities
-  renderRecentCities();
-
-  // get cities from LS
-  const cities = JSON.parse(localStorage.getItem("recentCities")) ?? [];
-
-  // if there are recent cities get the info for the most recent city
-  if (cities.length) {
-    const cityName = cities[cities.length - 1];
-    renderWeatherInfo(cityName);
-  }
-};
-
-$("#search-form").on("submit", handleSearch);
-$(document).ready(handleReady);
