@@ -1,7 +1,9 @@
+/* Set background color for the body */
 .body {
   background-color: rgb(181, 243, 181);
 }
 
+/* Styles for the weather card */
 .weather-card {
   display: flex;
   justify-content: center;
@@ -10,48 +12,55 @@
   margin: 0%;
   flex-direction: column;
   background-color: rgb(83, 133, 83);
-  font-size: 1.5rem;
+  font-size: 1.5rem; /* Font size for weather card */
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
-  font-size: 6rem;
+  font-size: 6rem; /* Large font size for main weather information */
 }
 
+/* Styles for current weather information */
 .current-weather {
   display: flex;
   justify-content: space-between;
   font-size: 1.5rem;
 }
 
+/* Styles for the search bar */
 .search-bar {
   height: 3vh;
-  font-size: 1rem;
+  font-size: 1rem; /* Font size for search bar */
 }
 
+/* Styles for the search button */
 .search-button {
   height: 1.5vh;
   margin: 0.6rem;
   border-radius: 100%;
 }
 
+/* Styles for the forecast header */
 .forecast-header {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2rem;
-  padding-top: 4rem;
+  font-size: 2rem; /* Font size for forecast header */
+  padding-top: 4rem; /* Add padding to the top of the forecast header */
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
-  font-size: 2rem;
+  font-size: 2rem; /* Large font size for forecast header */
 }
+
+/* Styles for the forecast display */
 .forecast-display {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  background-color: rgb(181, 243, 181);
+  background-color: rgb(181, 243, 181); /* Set background color for forecast display */
 }
 
+/* Styles for the forecast card */
 .forecast-card {
   padding: 2rem;
   margin: 2rem;
   height: 50vh;
-  font-size: 1.5rem;
+  font-size: 1.5rem; /* Font size for forecast card */
 }
